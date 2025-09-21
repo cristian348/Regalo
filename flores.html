@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Día de San Valentín</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 1.5s ease;
+        }
+        
+        /* Estado inicial - Fondo azul */
+        .fondo-azul {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        
+        /* Estado después del clic - Fondo negro con estrellas */
+        .fondo-estrellas {
+            background: #000;
+            color: #FFD700;
+        }
+        
+        .estrella {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: brillar 4s infinite ease-in-out;
+        }
+        
+        @keyframes brillar {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 1s ease;
+            margin: 0 auto;
+        }
+        
+        .container-oculto {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            color: #FFD700;
+            letter-spacing: 2px;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #FFDF00;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+        
+        .mensaje {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #FFC400;
+            font-weight: 500;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #FFC400, #FFD700);
+            color: #6a11cb;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            margin-bottom: 30px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            min-width: 250px;
+            max-width: 90%;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+        
+        .flores-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .flor-amarilla {
+            position: absolute;
+            font-size: 2rem;
+            top: -50px;
+            animation: caer linear forwards;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+        
+        @keyframes caer {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .music-control i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .mensaje-especial {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+        }
+        
+        .mensaje-especial.visible {
+            opacity: 1;
+        }
+        
+        .mensaje-especial h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+        
+        .mensaje-especial p {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Media Queries para Responsividad */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .mensaje {
+                font-size: 1.3rem;
+            }
+            
+            .btn {
+                padding: 14px 30px;
+                font-size: 1.1rem;
+                min-width: 220px;
+            }
+            
+            .container {
+                padding: 25px 15px;
+            }
+            
+            .mensaje-especial h1 {
+                font-size: 2rem;
+            }
+            
+            .mensaje-especial p {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .mensaje {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                min-width: 200px;
+                margin-bottom: 20px;
+            }
+            
+            .container {
+                padding: 20px 10px;
+                border-radius: 15px;
+            }
+            
+            .music-control {
+                width: 45px;
+                height: 45px;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .music-control i {
+                font-size: 1.2rem;
+            }
+            
+            .mensaje-especial h1 {
+                font-size: 1.8rem;
+            }
+            
+            .mensaje-especial p {
+                font-size: 1rem;
+            }
+            
+            .flor-amarilla {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                min-width: 180px;
+            }
+        }
+        
+        /* Ajustes para orientación horizontal en móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px 10px;
+                max-width: 90%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 5px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            
+            .mensaje {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body class="fondo-azul">
+    <div id="estrellas"></div>
+    
+    <div class="container" id="containerInicial">
+        <h1>HOLA</h1>
+        <h2>¡FELIZ DÍA DE SAN VALENTÍN!</h2>
+        <p class="mensaje">Para ti</p>
+        
+        <button class="btn" id="btnRevelar">HAZ CLIC POR FAVOR</button>
+    </div>
+    
+    <div class="mensaje-especial" id="mensajeEspecial">
+        <h1>Para la Prima que más Quiero</h1>
+    </div>
+    
+    <div class="flores-container" id="floresContainer"></div>
+    
+    <div class="music-control" id="musicControl">
+        <i class="fas fa-volume-up"></i>
+    </div>
+    
+    <audio id="music" loop>
+        <source src="Floricienta.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnRevelar = document.getElementById('btnRevelar');
+            const floresContainer = document.getElementById('floresContainer');
+            const music = document.getElementById('music');
+            const musicControl = document.getElementById('musicControl');
+            const containerInicial = document.getElementById('containerInicial');
+            const cuerpo = document.body;
+            const estrellasContainer = document.getElementById('estrellas');
+            const mensajeEspecial = document.getElementById('mensajeEspecial');
+            let musicPlaying = false;
+            
+            // Ajustar la cantidad de estrellas según el tamaño de pantalla
+            function getStarCount() {
+                if (window.innerWidth < 768) return 80;
+                if (window.innerWidth < 1024) return 100;
+                return 150;
+            }
+            
+            // Crear estrellas
+            function crearEstrellas() {
+                estrellasContainer.innerHTML = '';
+                const cantidad = getStarCount();
+                
+                for (let i = 0; i < cantidad; i++) {
+                    const estrella = document.createElement('div');
+                    estrella.classList.add('estrella');
+                    
+                    const tamaño = Math.random() * 3 + 1;
+                    estrella.style.width = tamaño + 'px';
+                    estrella.style.height = tamaño + 'px';
+                    
+                    estrella.style.left = Math.random() * 100 + 'vw';
+                    estrella.style.top = Math.random() * 100 + 'vh';
+                    
+                    estrella.style.animationDelay = Math.random() * 4 + 's';
+                    
+                    estrellasContainer.appendChild(estrella);
+                }
+            }
+            
+            // Ajustar la cantidad de flores según el tamaño de pantalla
+            function getFlowerCount() {
+                if (window.innerWidth < 768) return 30;
+                return 50;
+            }
+            
+            // Control de música
+            musicControl.addEventListener('click', function() {
+                if (musicPlaying) {
+                    music.pause();
+                    musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    music.play();
+                    musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+                musicPlaying = !musicPlaying;
+            });
+            
+            btnRevelar.addEventListener('click', function() {
+                // Reproducir música
+                music.play().catch(e => {
+                    console.log("La reproducción automática fue prevenida: ", e);
+                });
+                musicPlaying = true;
+                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                
+                // Cambiar a fondo negro con estrellas
+                cuerpo.classList.remove('fondo-azul');
+                cuerpo.classList.add('fondo-estrellas');
+                crearEstrellas();
+                
+                // Ocultar el contenedor inicial
+                containerInicial.classList.add('container-oculto');
+                
+                // Mostrar mensaje especial
+                setTimeout(function() {
+                    mensajeEspecial.classList.add('visible');
+                }, 1000);
+                
+                // Crear flores animadas
+                crearFlores();
+                
+                // Continuar creando flores cada 10 segundos
+                setInterval(crearFlores, 10000);
+            });
+            
+            function crearFlores() {
+                const flores = ['🌼', '🌻'];
+                const colores = ['#FFD700', '#FFEC8B', '#FFFACD', '#FFFF00', '#FFEF00'];
+                const cantidad = getFlowerCount();
+                
+                // Crear flores
+                for (let i = 0; i < cantidad; i++) {
+                    setTimeout(() => {
+                        const flor = document.createElement('div');
+                        flor.classList.add('flor-amarilla');
+                        flor.textContent = flores[Math.floor(Math.random() * flores.length)];
+                        flor.style.left = Math.random() * 100 + 'vw';
+                        flor.style.color = colores[Math.floor(Math.random() * colores.length)];
+                        flor.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                        
+                        // Tamaño responsive para las flores
+                        const tamañoBase = window.innerWidth < 480 ? 1.5 : 2;
+                        flor.style.fontSize = (Math.random() * 1 + tamañoBase) + 'rem';
+                        
+                        floresContainer.appendChild(flor);
+                        
+                        // Eliminar la flor después de que termine la animación
+                        setTimeout(() => {
+                            if (flor.parentNode) {
+                                flor.remove();
+                            }
+                        }, 10000);
+                    }, i * 200);
+                }
+            }
+            
+            // Ajustar elementos cuando cambia el tamaño de la ventana
+            window.addEventListener('resize', function() {
+                if (cuerpo.classList.contains('fondo-estrellas')) {
+                    crearEstrellas();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
